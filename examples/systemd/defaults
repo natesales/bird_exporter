@@ -1,0 +1,1 @@
+BIRD_EXPORTER_ARGS="-format.new=true -bird.v2 -bird.socket='/var/run/bird/bird.ctl' -pathvector.protocols='/etc/bird/protocols.json'"

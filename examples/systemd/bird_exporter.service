@@ -1,0 +1,12 @@
+[Unit]
+Description=BIRD Exporter
+After=network.target
+
+[Service]
+User=bird
+Group=bird
+EnvironmentFile=/etc/default/bird_exporter
+ExecStart=/usr/local/bin/bird_exporter $BIRD_EXPORTER_ARGS
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,10 @@
 package metrics
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/czerwonk/bird_exporter/parser"
 	"github.com/czerwonk/bird_exporter/protocol"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -26,6 +30,7 @@ func (m *GenericProtocolMetricExporter) Describe(ch chan<- *prometheus.Desc) {
 
 func (m *GenericProtocolMetricExporter) Export(p *protocol.Protocol, ch chan<- prometheus.Metric, newNaming bool) {
 	labels := m.labelStrategy.LabelNames(p)
+	labels = append(labels, "pv_name", "pv_tags", "pv_asn")
 
 	var importCountDesc *prometheus.Desc
 	var exportCountDesc *prometheus.Desc
@@ -69,6 +74,9 @@ func (m *GenericProtocolMetricExporter) Export(p *protocol.Protocol, ch chan<- p
 	withdrawsExportReceiveCountDesc := prometheus.NewDesc(m.prefix+"_changes_withdraw_export_receive_count", "Number of outgoing withdraws", labels, nil)
 
 	l := m.labelStrategy.LabelValues(p)
+	pvProtocol := parser.GetProtocol(p.Name)
+	l = append(l, pvProtocol.Name, strings.Join(pvProtocol.Tags, ","), fmt.Sprintf("%d", pvProtocol.ASN))
+
 	ch <- prometheus.MustNewConstMetric(upDesc, prometheus.GaugeValue, float64(p.Up), append(l, p.State)...)
 	ch <- prometheus.MustNewConstMetric(importCountDesc, prometheus.GaugeValue, float64(p.Imported), l...)
 	ch <- prometheus.MustNewConstMetric(exportCountDesc, prometheus.GaugeValue, float64(p.Exported), l...)

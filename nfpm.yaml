@@ -1,0 +1,19 @@
+name: "bird_exporter"
+arch: "amd64"
+platform: "linux"
+version: 0.0.1-df2e0f2
+section: "default"
+priority: "extra"
+maintainer: "Nate Sales <nate@natesales.net>"
+description: "Bird protocol state exporter for bird routing daemon to use with https://prometheus.io"
+vendor: "Nate Sales"
+homepage: "https://github.com/natesales/bird_exporter"
+license: "MIT"
+contents:
+  - src: ./bird_exporter
+    dst: /usr/local/bin/bird_exporter
+  - src: ./examples/systemd/bird_exporter.service
+    dst: /lib/systemd/system/bird_exporter.service
+  - src: ./examples/systemd/defaults
+    dst: /etc/default/bird_exporter
+    type: config
